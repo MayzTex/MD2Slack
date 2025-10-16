@@ -141,7 +141,7 @@ class SlackBlockLexer:
         elif rule_name == 'BLOCK_QUOTE':
             token.update({'value': match.group(2), 'level': len(match.group(1).strip())})
         elif rule_name == 'HEADER':
-            token.update({'value': match.group(2), 'level': len(match.group(1)), 'raw': match.group(2)})
+            token.update({'value': match.group(2), 'level': len(match.group(1))})
         elif rule_name in ['UNORDERED_LIST', 'NUMBERED_LIST', 'LETTERED_LIST']:
             bullet = '•' if rule_name == 'UNORDERED_LIST' else f"{match.group(2)})"
             token.update({'value': match.group(3), 'bullet': bullet})
@@ -205,7 +205,6 @@ class SlackInlineLexer:
         
         def raw_email(match):
             email = match.group(1)
-            print(email)
 
             # Check if the email is already formatted as a mailto link
             if email.startswith("<mailto:"):

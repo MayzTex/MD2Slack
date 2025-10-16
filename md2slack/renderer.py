@@ -36,7 +36,13 @@ class SlackRenderer:
                 output.append(f"{table_text}\n")
             elif token['type'] == 'BLOCK_QUOTE':
                 quote_prefix = '>' * token['level']
-                output.append(f"{quote_prefix} {indent_spaces}{token['value']}")
+                value = token['value']
+                list_match = re.match(r'^\s*([-*])\s+(.*)', value)
+                if list_match:
+                    list_content = list_match.group(2)
+                    output.append(f"{quote_prefix} • {list_content}")
+                else:
+                    output.append(f"{quote_prefix} {indent_spaces}{value}")
             elif token['type'] == 'HEADER':
                 raw = token.get("raw", "")
                 value = token["value"]

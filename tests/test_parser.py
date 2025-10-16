@@ -153,3 +153,57 @@ def test_various_links():
     text = "Ask a question at [qa@domain.com](mailto:qa@domain.com?subject=Question)"
     expected = "Ask a question at <mailto:qa@domain.com?subject=Question|qa@domain.com>"
     assert parser(text) == expected
+
+def test_header_with_link():
+    parser = SlackMarkdown()
+    markdown_input1 = "# [Slack](https://slack.com)"
+    expected_output1 = "*<https://slack.com|Slack>*"
+    assert parser(markdown_input1) == expected_output1
+
+    markdown_input2 = "## A link to [Google](https://google.com) here"
+    expected_output2 = "*A link to <https://google.com|Google> here*"
+    assert parser(markdown_input2) == expected_output2
+
+def test_header_with_mixed_inline_formatting():
+    parser = SlackMarkdown()
+    markdown = "## *Styling* with `code`, ~strike~, and a [link](https://example.com)"
+    expected = "*_Styling_ with `code`, ~strike~, and a <https://example.com|link>*"
+    assert parser(markdown) == expected
+
+def test_deeply_nested_lists_with_formatting():
+    parser = SlackMarkdown()
+    markdown = """
+- Level 1 Item
+  - Level 2 with **bold**
+    - Level 3 with a [link](https://google.com)
+    - Level 3 for @user
+- Back to Level 1
+"""
+    expected = """
+• Level 1 Item
+  • Level 2 with *bold*
+    • Level 3 with a <https://google.com|link>
+    • Level 3 for <@user>
+• Back to Level 1
+""".strip()
+    assert parser(markdown) == expected
+
+def test_blockquote_containing_list_and_link():
+    parser = SlackMarkdown()
+    markdown = """
+> Here is a quote:
+> - First point with _italics_
+> - Check out [this site](https://slack.com)
+"""
+    expected = """> Here is a quote:
+> • First point with _italics_
+> • Check out <https://slack.com|this site>"""
+    assert parser(markdown) == expected
+
+def test_literal_markdown_characters():
+    parser = SlackMarkdown()
+    assert parser("A variable name like this_is_a_variable.") == "A variable name like this_is_a_variable."
+
+    assert parser("Calculate it with 5 * 10.") == "Calculate it with 5 * 10."
+
+    assert parser("This is an incomplete *bold.") == "This is an incomplete *bold."
