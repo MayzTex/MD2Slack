@@ -142,9 +142,12 @@ class SlackBlockLexer:
             token.update({'value': match.group(2), 'level': len(match.group(1).strip())})
         elif rule_name == 'HEADER':
             token.update({'value': match.group(2), 'level': len(match.group(1))})
-        elif rule_name in ['UNORDERED_LIST', 'NUMBERED_LIST', 'LETTERED_LIST']:
-            bullet = '•' if rule_name == 'UNORDERED_LIST' else f"{match.group(2)})"
-            token.update({'value': match.group(3), 'bullet': bullet})
+        elif rule_name == 'UNORDERED_LIST':
+            token.update({'value': match.group(3), 'bullet': '•'})
+        elif rule_name == 'NUMBERED_LIST':
+            token.update({'value': match.group(3), 'number': int(match.group(2))})
+        elif rule_name == 'LETTERED_LIST':
+            token.update({'value': match.group(3), 'bullet': f"{match.group(2)})"})
         else:
             token['value'] = match.group(1) if match.groups() else ""
 

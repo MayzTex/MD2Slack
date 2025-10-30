@@ -51,6 +51,11 @@ def test_nested_lists():
     expected_output = "• Item 1\n  • Subitem 1.1\n  • Subitem 1.2\n• Item 2"
     assert parser(markdown) == expected_output
 
+def test_numbered_list_resets_after_paragraph():
+    parser = SlackMarkdown()
+    assert parser("1. First\n2. Second\n\nSome text\n\n1. First\n2. Second") == "1. First\n2. Second\n\nSome text\n\n1. First\n2. Second"
+    assert parser("1. First\n2. Second\n\nSome text\n\n3. Third\n4. Fourth") == "1. First\n2. Second\n\nSome text\n\n3. Third\n4. Fourth"
+
 def test_blockquote():
     parser = SlackMarkdown()
     assert parser("> Blockquote") == "> Blockquote"
@@ -67,6 +72,20 @@ def test_table():
 Column 1   | Column 2  
 ---------- | ----------
 Data 1     | Data 2    
+```"""
+    assert parser(markdown) == expected_output
+
+def test_table_empty_values():
+    parser = SlackMarkdown()
+    markdown = """
+| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| Data 1   | Data 2   |          |
+"""
+    expected_output = """```
+Column 1   | Column 2   | Column 3  
+---------- | ---------- | ----------
+Data 1     | Data 2     |           
 ```"""
     assert parser(markdown) == expected_output
 
