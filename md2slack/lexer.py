@@ -96,7 +96,7 @@ class SlackBlockLexer:
             for rule_name in [
                 'SETEXT_HEADER', 'HEADER', 'PARAGRAPH_BREAK',
                 'BLOCK_QUOTE', 'CODE_BLOCK', 'UNORDERED_LIST', 
-                'NUMBERED_LIST', 'LETTERED_LIST', 'PARAGRAPH'
+                'NUMBERED_LIST', 'LETTERED_LIST', 'EMPTY_HEADER', 'PARAGRAPH'
             ]:
                 pattern = getattr(self.rules, rule_name)
                 match = pattern.match(line)
@@ -128,6 +128,9 @@ class SlackBlockLexer:
         Returns:
             dict: A dictionary representing the token.
         """
+        if rule_name == 'EMPTY_HEADER':
+            return None
+        
         token = {'type': rule_name, 'indent': indent_level, 'value': match.group(1).strip() if match.groups() else ""}
 
         if rule_name in ['PARAGRAPH_BREAK']:

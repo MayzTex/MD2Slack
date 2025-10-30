@@ -10,6 +10,13 @@ def test_headers():
     assert parser("##### Heading 5") == "*Heading 5*"
     assert parser("###### Heading 6") == "*Heading 6*"
 
+
+def test_empty_headings():
+    parser = SlackMarkdown()
+    assert parser("# ") == ""
+    assert parser("##") == ""
+    assert parser("###### ") == ""
+
 def test_bold_italic():
     parser = SlackMarkdown()
     assert parser("**Bold**") == "*Bold*"

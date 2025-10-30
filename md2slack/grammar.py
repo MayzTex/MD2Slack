@@ -8,6 +8,9 @@ class SlackBlockGrammar:
     """
     # Header syntax, supporting up to 6 levels (e.g., # Header, ## Header, etc.)
     HEADER = re.compile(r'^(#{1,6})\s+(.+)', re.M)
+
+    # Matches empty headers (e.g., # , ## , etc.)
+    EMPTY_HEADER = re.compile(r'^(#{1,6})\s*$', re.M)
     
     # Matches fenced code blocks (```code```)
     CODE_BLOCK = re.compile(r'```([\s\S]+?)```', re.M)
